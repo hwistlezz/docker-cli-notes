@@ -44,9 +44,9 @@
 - [x] Docker daemon 권한 문제 해결
 - [x] 터미널 기본 조작 실습
 - [x] 권한 변경 실습
-- [ ] hello-world 실행
-- [ ] Ubuntu 컨테이너 진입 실습
-- [ ] Docker 운영 명령 확인 (`images`, `ps -a`, `logs`, `stats`)
+- [x] hello-world 실행
+- [x] Ubuntu 컨테이너 진입 실습
+- [x] Docker 운영 명령 확인 (`images`, `ps -a`, `logs`, `stats`)
 - [ ] Dockerfile 기반 웹 서버 이미지 작성
 - [ ] 포트 매핑 접속 검증
 - [ ] 바인드 마운트 반영 검증
@@ -121,9 +121,26 @@
 
 ---
 
-## 6. Docker 기본 점검 및 운영
+## 🐳 6. Docker 기본 점검 및 운영
 
-자세한 내용은 아래 파일에 정리합니다.
+Docker 기본 점검 및 컨테이너 실행 실습에서는 다음 내용을 확인했습니다.
+
+- `docker --version` 으로 Docker CLI 버전 확인
+- `docker info` 로 Docker daemon 동작 여부 확인
+- `docker run hello-world` 실행 성공 확인
+- `docker run -it ubuntu bash` 로 Ubuntu 컨테이너 내부 진입
+- 컨테이너 내부에서 `pwd`, `echo`, `cat /etc/os-release` 실행
+- `docker images` 로 이미지 목록 확인
+- `docker ps`, `docker ps -a` 로 실행/종료 컨테이너 상태 확인
+- `docker logs` 로 hello-world 컨테이너 로그 확인
+- `docker stats --no-stream` 로 현재 실행 중인 컨테이너 리소스 사용량 확인
+
+추가로 `attach-exec-demo` 라는 이름의 실습용 Ubuntu 컨테이너를 사용해 `attach` 와 `exec` 의 차이도 확인했습니다.
+
+- `docker attach attach-exec-demo` 는 컨테이너의 메인 프로세스에 직접 연결하는 방식이므로, 셸에서 `exit` 하면 컨테이너도 종료되어 `docker ps -a` 에서 `Exited` 상태로 확인됨
+- `docker exec -it attach-exec-demo bash` 는 실행 중인 컨테이너 안에 새로운 셸을 여는 방식이므로, exec 셸에서 `exit` 해도 원래 컨테이너는 계속 실행 상태(`Up`)를 유지함
+
+자세한 내용은 아래 파일에 정리했습니다.
 
 - [docs/docker-log.md](docs/docker-log.md)
 
