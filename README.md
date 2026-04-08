@@ -1,4 +1,4 @@
-# docker-cli-notes
+# 🖥️ docker-cli-notes
 
 리눅스 CLI와 Docker 기반의 개발 워크스테이션을 직접 구성하고,  
 터미널 조작, 권한 설정, 컨테이너 실행/관리, Dockerfile 기반 웹 서버 실행,  
@@ -42,7 +42,7 @@
 - [x] Ubuntu 홈 디렉토리 작업 환경 구성
 - [x] Docker Desktop 연동
 - [x] Docker daemon 권한 문제 해결
-- [ ] 터미널 기본 조작 실습
+- [x] 터미널 기본 조작 실습
 - [ ] 권한 변경 실습
 - [ ] hello-world 실행
 - [ ] Ubuntu 컨테이너 진입 실습
@@ -57,9 +57,26 @@
 
 ---
 
-## 4. 터미널 조작 로그
+## 💻 4. 터미널 조작 로그
 
-자세한 내용은 아래 파일에 정리합니다.
+터미널 기본 조작을 통해 현재 위치 확인, 파일/디렉토리 목록 확인, 디렉토리 생성 및 이동, 빈 파일 생성, 파일 내용 확인, 파일 복사, 이름 변경, 삭제, 상위 디렉토리 복귀까지 순서대로 수행했습니다.
+
+### 실행한 핵심 명령
+
+- `pwd`로 현재 작업 경로 확인
+- `ls -la`로 현재 디렉토리 구조 확인
+- `mkdir practice`로 실습 디렉토리 생성
+- `cd practice`로 디렉토리 이동
+- `touch test.txt`로 빈 파일 생성
+- `cat test.txt`로 파일 내용 확인
+- `cp test.txt test-copy.txt`로 파일 복사
+- `mv test-copy.txt renamed.txt`로 파일 이름 변경
+- `rm renamed.txt`로 파일 삭제
+- `cd ..` 및 `ls -la practice`로 상위 디렉토리 복귀 및 내부 상태 확인
+
+추가로 `test.txt` 파일에 `Hello World!` 내용을 입력한 뒤, 복사본과 이름 변경 결과까지 확인했습니다.
+
+자세한 명령과 결과는 아래 문서에 정리했습니다.
 
 - [docs/terminal-log.md](docs/terminal-log.md)
 
