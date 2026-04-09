@@ -521,7 +521,7 @@ $ curl http://localhost:8081
 ```
 
 ```bash
-<p>Live content update through bind mount.</p>
+curl http://localhost:8081
 ```
 
 ### 출력
@@ -742,7 +742,7 @@ $ curl http://localhost:8082
 
 ---
 
-### 13-4. compose 환경 정리
+### 13-6. compose 환경 정리
 
 ```bash
 $ docker compose down
