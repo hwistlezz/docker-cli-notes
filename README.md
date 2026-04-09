@@ -47,11 +47,11 @@
 - [x] hello-world 실행
 - [x] Ubuntu 컨테이너 진입 실습
 - [x] Docker 운영 명령 확인 (`images`, `ps -a`, `logs`, `stats`)
-- [ ] Dockerfile 기반 웹 서버 이미지 작성
-- [ ] 포트 매핑 접속 검증
-- [ ] 바인드 마운트 반영 검증
-- [ ] Docker 볼륨 영속성 검증
-- [ ] Git 설정 및 GitHub 연동
+- [x] Dockerfile 기반 웹 서버 이미지 작성
+- [x] 포트 매핑 접속 검증
+- [x] 바인드 마운트 반영 검증
+- [x] Docker 볼륨 영속성 검증
+- [x] Git 설정 및 GitHub 연동
 - [ ] 트러블슈팅 기록
 - [ ] README 최종 정리
 
@@ -148,31 +148,140 @@ Docker 기본 점검 및 컨테이너 실행 실습에서는 다음 내용을 �
 
 ## 7. 커스텀 웹 서버 이미지
 
-> 진행 후 기록
+기존 웹 서버 베이스 이미지 방식으로 `nginx:alpine` 를 선택했습니다.  
+정적 HTML 한 장을 가장 단순하고 안정적으로 서빙할 수 있어, **웹 서버 베이스 이미지 활용 + 정적 콘텐츠 교체** 으로 진행했습니다.
+
+적용한 커스텀 포인트는 다음과 같습니다.
+
+- `FROM nginx:alpine`
+  - 경량 NGINX 웹 서버 이미지를 베이스로 사용
+- `COPY app/index.html /usr/share/nginx/html/index.html`
+  - 기본 index 페이지를 내가 만든 정적 HTML로 교체
+
+### 사용한 Dockerfile:
+
+```dockerfile
+FROM nginx:alpine
+
+COPY app/index.html /usr/share/nginx/html/index.html
+```
+
+### 빌드 및 실행 명령
+
+```bash
+$ docker build -t docker-cli-web:1.0 .
+$ docker run -d --name docker-cli-web -p 8080:80 docker-cli-web:1.0
+$ docker ps
+```
+
+### 핵심 결과:
+
+- `docker-cli-web:1.0` 이미지 빌드 성공
+- `docker-cli-web` 컨테이너 실행 성공
+- `0.0.0.0:8080->80/tcp` 포트 매핑 확인
+
+자세한 로그는 아래 문서에 정리했습니다.
+
+- [docs/docker-log.md](docs/docker-log.md)
 
 ---
 
 ## 8. 포트 매핑 검증
 
-> 진행 후 기록
+브라우저와 curl을 사용해 포트 매핑 결과를 확인했습니다.
+
+```bash
+$ curl http://localhost:8080
+```
+
+확인 결과, 컨테이너 내부의 NGINX 웹 서버가 호스트의 8080 포트로 정상 노출되었고, 작성한 HTML 페이지가 응답으로 반환되었습니다.
+
+### 브라우저 접속 화면:
+
+- [8080 접속 화면](docs/screenshots/browser-8080.jpg)
 
 ---
 
 ## 9. 바인드 마운트 검증
 
-> 진행 후 기록
+호스트의 app/ 디렉토리를 컨테이너의 웹 루트에 읽기 전용으로 바인드 마운트하여, 호스트 파일 수정이 컨테이너에 즉시 반영되는지 확인했습니다.
+
+### 실행 명령:
+
+```bash
+$ docker run -d --name docker-cli-bind -p 8081:80 -v "$(pwd)/app:/usr/share/nginx/html:ro" nginx:alpine
+$ docker ps --filter "name=docker-cli-bind"
+$ curl http://localhost:8081
+```
+
+이후 `app/index.html`에 아래 문장을 추가했습니다.
+
+```HTML
+<p>Live content update through bind mount.</p>
+```
+
+컨테이너를 재생성하지 않고 다시 확인했습니다.
+
+```bash
+$ curl http://localhost:8081
+```
+
+확인 결과, 호스트 파일 변경이 컨테이너 웹 페이지에 즉시 반영되었습니다.
+
+### 브라우저 접속 화면:
+
+- [8081 수정 전](docs/screenshots/browser-8081-before.jpg)
+- [8081 수정 후](docs/screenshots/browser-8081-after.jpg)
 
 ---
 
 ## 10. 볼륨 영속성 검증
 
-> 진행 후 기록
+named volume docker-cli-data를 생성하고, 첫 번째 컨테이너에서 파일을 만든 뒤 컨테이너를 삭제했습니다.
+이후 같은 volume을 두 번째 컨테이너에 다시 연결해 동일한 파일 내용을 읽어, 데이터가 유지됨을 확인했습니다.
+
+### 실행 명령:
+
+```bash
+$ docker volume create docker-cli-data
+$ docker run -d --name volume-write -v docker-cli-data:/data ubuntu sleep infinity
+$ docker exec volume-write bash -lc 'echo "persistent data check" > /data/note.txt && cat /data/note.txt'
+$ docker rm -f volume-write
+$ docker run -d --name volume-read -v docker-cli-data:/data ubuntu sleep infinity
+$ docker exec volume-read bash -lc 'cat /data/note.txt'
+```
+
+확인 결과, 첫 번째 컨테이너 삭제 후에도 note.txt 내용이 그대로 유지되었습니다.
+
+자세한 로그는 아래 문서에 정리했습니다.
+
+- [docs/docker-log.md](docs/docker-log.md)
 
 ---
 
 ## 11. Git / GitHub / VS Code 연동
 
-> 진행 후 기록
+Git 설정, 현재 브랜치, 원격 저장소 연결 상태를 확인했습니다.
+
+### 실행 명령:
+
+```bash
+$ git config --list
+$ git branch --show-current
+$ git remote -v
+$ git status
+```
+
+### 핵심 결과
+
+- 현재 브랜치: `main`
+- 원격 저장소 `origin` 연결 확인
+- VS Code Source Control에서 현재 저장소 변경 사항 확인
+- 문서에는 이메일 등 민감정보를 마스킹하여 기록
+
+### VS Code 화면:
+
+- [VS Code 저장소 화면](docs/screenshots/vscode-source-control.jpg)
 
 ---
 

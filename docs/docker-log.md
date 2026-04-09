@@ -14,7 +14,7 @@
 ## 🔍 1. Docker 버전 확인
 
 ```bash
-docker --version
+$ docker --version
 Docker version 28.0.1, build 068a01e
 ```
 
@@ -27,7 +27,7 @@ Docker version 28.0.1, build 068a01e
 ## ⚙️ 2. Docker daemon 동작 확인
 
 ```bash
-docker info
+$ docker info
 ```
 
 ### 핵심 출력 일부
@@ -53,7 +53,7 @@ Server:
 ## 👋 3. hello-world 컨테이너 실행
 
 ```bash
-docker run hello-world
+$ docker run hello-world
 ```
 
 ### 핵심 출력
@@ -73,21 +73,21 @@ This message shows that your installation appears to be working correctly.
 ## 💻 4. Ubuntu 컨테이너 내부 진입
 
 ```bash
-docker run -it ubuntu bash
+$ docker run -it ubuntu bash
 ```
 
 컨테이너 내부에서 아래 명령을 실행했습니다.
 
 ```bash
-pwd
+$ pwd
 /
-echo "hello from ubuntu container"
+$ echo "hello from ubuntu container"
 hello from ubuntu container
 
-cat /etc/os-release
+$ cat /etc/os-release
 PRETTY_NAME="Ubuntu 24.04.4 LTS"
 ...
-exit
+$ exit
 ```
 
 ### 👉 설명
@@ -101,7 +101,7 @@ exit
 ## 🖼️ 5. 이미지 목록 확인
 
 ```bash
-docker images
+$ docker images
 ```
 
 ### 핵심 출력 일부
@@ -123,7 +123,7 @@ nginx         latest    ...
 ## 📦 6. 컨테이너 목록 확인
 
 ```bash
-docker ps -a
+$ docker ps -a
 ```
 
 ### 핵심 출력 일부
@@ -142,7 +142,7 @@ CONTAINER ID   IMAGE         COMMAND    STATUS                     NAMES
 추가로 실행 중인 컨테이너만 보기 위해 아래 명령을 사용했습니다.
 
 ```bash
-docker ps
+$ docker ps
 ```
 
 ### 핵심 출력 일부
@@ -157,7 +157,7 @@ CONTAINER ID   IMAGE    COMMAND   STATUS   PORTS   NAMES
 ## 📜 7. 컨테이너 로그 확인
 
 ```bash
-docker logs $(docker ps -aq --filter "ancestor=hello-world" | head -n 1)
+$ docker logs $(docker ps -aq --filter "ancestor=hello-world" | head -n 1)
 ```
 
 ### 핵심 출력
@@ -177,7 +177,7 @@ This message shows that your installation appears to be working correctly.
 ## 📊 8. 리소스 사용량 확인
 
 ```bash
-docker stats --no-stream
+$ docker stats --no-stream
 ```
 
 ### 핵심 출력 일부
@@ -202,7 +202,7 @@ CONTAINER ID   NAME         CPU %     MEM USAGE / LIMIT   MEM %     NET I/O   BL
 ### 9-1. 실습용 컨테이너 생성
 
 ```bash
-docker run -dit --name attach-exec-demo ubuntu bash
+$ docker run -dit --name attach-exec-demo ubuntu bash
 ```
 
 ### 핵심 출력
@@ -220,15 +220,15 @@ docker run -dit --name attach-exec-demo ubuntu bash
 ### 9-2. attach로 메인 프로세스에 접속
 
 ```bash
-docker attach attach-exec-demo
+$ docker attach attach-exec-demo
 ```
 
 컨테이너 내부에서:
 
 ```bash
-echo "attached to main bash"
-pwd
-exit
+$ echo "attached to main bash"
+$ pwd
+$ exit
 ```
 
 ### 핵심 출력
@@ -248,7 +248,7 @@ attached to main bash
 ### 9-3. attach 종료 후 컨테이너 상태 확인
 
 ```bash
-docker ps -a --filter "name=attach-exec-demo"
+$ docker ps -a --filter "name=attach-exec-demo"
 ```
 
 ### 핵심 출력
@@ -267,7 +267,7 @@ CONTAINER ID   IMAGE    COMMAND   CREATED   STATUS          PORTS   NAMES
 ### 9-4. 컨테이너 다시 시작
 
 ```bash
-docker start attach-exec-demo
+$ docker start attach-exec-demo
 ```
 
 ### 핵심 출력
@@ -285,15 +285,15 @@ attach-exec-demo
 ### 9-5. exec로 실행 중인 컨테이너 내부 진입
 
 ```bash
-docker exec -it attach-exec-demo bash
+$ docker exec -it attach-exec-demo bash
 ```
 
 컨테이너 내부에서:
 
 ```bash
-echo "inside exec shell"
-pwd
-exit
+$ echo "inside exec shell"
+$ pwd
+$ exit
 ```
 
 ### 핵심 출력
@@ -313,7 +313,7 @@ inside exec shell
 ### 9-6. exec 종료 후 컨테이너 상태 확인
 
 ```bash
-docker ps --filter "name=attach-exec-demo"
+$ docker ps --filter "name=attach-exec-demo"
 ```
 
 ### 핵심 출력
@@ -343,5 +343,290 @@ CONTAINER ID   IMAGE    COMMAND   CREATED   STATUS   PORTS   NAMES
 
 - `attach + exit` → 컨테이너 종료
 - `exec + exit` → exec 셸만 종료, 원래 컨테이너는 유지
+
+---
+
+## 🌐 10. Dockerfile 기반 커스텀 웹 서버 이미지 제작
+
+### 10-1. 선택한 베이스 이미지와 커스텀 포인트
+
+이번 실습에서는 기존 웹 서버 베이스 이미지 방식으로 `nginx:alpine` 를 선택했습니다.
+
+적용한 커스텀 포인트:
+
+- `FROM nginx:alpine`
+  - 경량 웹 서버 이미지를 베이스로 사용
+- `COPY app/index.html /usr/share/nginx/html/index.html`
+  - 기본 index 페이지를 내가 만든 정적 HTML로 교체
+
+### 사용한 Dockerfile:
+
+```dockerfile
+FROM nginx:alpine
+
+COPY app/index.html /usr/share/nginx/html/index.html
+```
+
+### 10-2. 이미지 빌드
+
+```bash
+$ docker build -t docker-cli-web:1.0 .
+```
+
+### 핵심 출력 일부
+
+```text
+[+] Building ... FINISHED
+=> naming to docker.io/library/docker-cli-web:1.0
+=> unpacking to docker.io/library/docker-cli-web:1.0
+```
+
+### 👉 설명
+
+- `docker-cli-web:1.0` 이름의 커스텀 이미지가 정상적으로 빌드됨
+
+---
+
+### 10-3. 이미지 목록 확인
+
+```bash
+$ docker images
+```
+
+### 핵심 출력 일부
+
+```text
+REPOSITORY       TAG      IMAGE ID       CREATED         SIZE
+docker-cli-web   1.0      1537bb123393   2 minutes ago   92.6MB
+ubuntu           latest   ...
+hello-world      latest   ...
+nginx            latest   ...
+```
+
+### 👉 설명
+
+- 커스텀 이미지 `docker-cli-web:1.0` 이 로컬 이미지 목록에 생성된 것을 확인
+
+---
+
+### 10-4. 커스텀 웹 서버 컨테이너 실행
+
+```bash
+$ docker run -d --name docker-cli-web -p 8080:80 docker-cli-web:1.0
+$ docker ps
+```
+
+### 핵심 출력 일부
+
+```text
+<container_id>
+
+CONTAINER ID   IMAGE                COMMAND                  STATUS         PORTS                  NAMES
+...            docker-cli-web:1.0   "/docker-entrypoint.…"   Up ...         0.0.0.0:8080->80/tcp   docker-cli-web
+```
+
+### 👉 설명
+
+- 커스텀 이미지로 컨테이너를 실행했고, 호스트 `8080` 포트가 컨테이너 `80` 포트에 연결됨
+
+---
+
+### 10-5. 포트 매핑 응답 확인
+
+```bash
+$ curl http://localhost:8080
+```
+
+### 핵심 출력 일부
+
+```text
+<!doctype html>
+<html lang="ko">
+  <head>
+    <title>docker-cli-notes</title>
+  </head>
+  <body>
+    <h1>Docker CLI Notes</h1>
+    <p>nginx 기반 커스텀 웹 서버 컨테이너 실행 확인 페이지입니다.</p>
+    <p>Custom Web Server Image</p>
+  </body>
+</html>
+```
+
+### 👉 설명
+
+- 호스트 `8080` 포트로 접속했을 때, 컨테이너 내부의 NGINX가 작성한 HTML 페이지를 정상 응답함
+
+---
+
+## 🔗 11. 바인드 마운트 반영 검증
+
+### 11-1. 바인드 마운트 컨테이너 실행
+
+```bash
+$ docker run -d --name docker-cli-bind -p 8081:80 -v "$(pwd)/app:/usr/share/nginx/html:ro" nginx:alpine
+$ docker ps --filter "name=docker-cli-bind"
+```
+
+### 핵심 출력 일부
+
+```text
+<container_id>
+
+CONTAINER ID   IMAGE          COMMAND                  STATUS         PORTS                  NAMES
+...            nginx:alpine   "/docker-entrypoint.…"   Up ...         0.0.0.0:8081->80/tcp   docker-cli-bind
+```
+
+### 👉 설명
+
+- 호스트의 `app/` 디렉토리를 컨테이너 웹 루트에 읽기 전용으로 연결함
+- `8081` 포트로 바인드 마운트 검증용 컨테이너를 별도로 실행함
+
+---
+
+### 11-2. 수정 전 응답 확인
+
+```bash
+$ curl http://localhost:8081
+```
+
+### 핵심 출력 일부
+
+```HTML
+<!doctype html>
+<html lang="ko">
+  <head>
+    <title>docker-cli-notes</title>
+  </head>
+  <body>
+    <h1>Docker CLI Notes</h1>
+    <p>nginx 기반 커스텀 웹 서버 컨테이너 실행 확인 페이지입니다.</p>
+    <p>Custom Web Server Image</p>
+  </body>
+</html>
+```
+
+### 👉 설명
+
+- 바인드 마운트 직후에는 기존 `index.html` 내용이 그대로 응답됨
+
+---
+
+### 11-3. 호스트 파일 수정 후 다시 확인
+
+`app/index.html` 에 아래 문장을 추가한 뒤, 컨테이너 재실행 없이 다시 확인했습니다.
+
+```HTML
+<p>Live content update through bind mount.</p>
+```
+
+```bash
+<p>Live content update through bind mount.</p>
+```
+
+### 출력
+
+```HTML
+<!doctype html>
+<html lang="ko">
+  <head>
+    <title>docker-cli-notes</title>
+  </head>
+  <body>
+    <h1>Docker CLI Notes</h1>
+    <p>nginx 기반 커스텀 웹 서버 컨테이너 실행 확인 페이지입니다.</p>
+    <p>Custom Web Server Image</p>
+    <p>Live content update through bind mount.</p>
+  </body>
+</html>
+```
+
+### 👉 설명
+
+- 이미지를 다시 빌드하거나 컨테이너를 다시 만들지 않아도, 호스트 파일 수정 내용이 즉시 반영됨
+- 바인드 마운트가 컨테이너 내부와 호스트 파일을 직접 연결한다는 점을 확인함
+
+---
+
+## 💾 12. Docker 볼륨 영속성 검증
+
+### 12-1. named volume 생성
+
+```bash
+$ docker volume create docker-cli-data
+```
+
+### 핵심 출력 일부
+
+```text
+docker-cli-data
+```
+
+### 👉 설명
+
+- `docker-cli-data` 라는 이름의 Docker volume을 생성함
+
+---
+
+### 12-2. 첫 번째 컨테이너에서 파일 생성
+
+```bash
+$ docker run -d --name volume-write -v docker-cli-data:/data ubuntu sleep infinity
+$ docker exec volume-write bash -lc 'echo "persistent data check" > /data/note.txt && cat /data/note.txt'
+```
+
+### 핵심 출력 일부
+
+```text
+<container_id>
+persistent data check
+```
+
+### 👉 설명
+
+- 첫 번째 컨테이너에서 `/data/note.txt` 파일을 생성하고 내용을 기록함
+
+---
+
+### 12-3. 첫 번째 컨테이너 삭제 후 두 번째 컨테이너에서 재확인
+
+```bash
+$ docker rm -f volume-write
+$ docker run -d --name volume-read -v docker-cli-data:/data ubuntu sleep infinity
+$ docker exec volume-read bash -lc 'cat /data/note.txt'
+```
+
+### 핵심 출력 일부
+
+```text
+volume-write
+<container_id>
+persistent data check
+```
+
+### 👉 설명
+
+- 첫 번째 컨테이너를 삭제한 뒤에도, 같은 volume을 연결한 두 번째 컨테이너에서 동일한 파일 내용을 다시 읽을 수 있었음
+- volume 데이터가 컨테이너 생명주기와 분리되어 유지됨을 확인함
+
+---
+
+### 12-4. volume 목록 확인
+
+```bash
+$ docker volume ls
+```
+
+### 핵심 출력 일부
+
+```text
+DRIVER    VOLUME NAME
+local     docker-cli-data
+```
+
+### 👉 설명
+
+- 생성한 named volume `docker-cli-data` 가 로컬에 존재함을 확인
+  과제와 무관한 다른 volume 이름은 기록에서 제외함
 
 ---

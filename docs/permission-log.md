@@ -18,10 +18,10 @@
 - 📂 디렉토리: `app/`
 
 ```bash
-ls -l app/index.html
+$ ls -l app/index.html
 -rw-r--r-- 1 user docker 0 Apr  8 18:05 app/index.html
 
-ls -ld app
+$ ls -ld app
 drwxr-xr-x 2 user docker 4096 Apr  8 18:05 app
 ```
 
@@ -35,10 +35,10 @@ drwxr-xr-x 2 user docker 4096 Apr  8 18:05 app
 ## 🔒 2. 임시로 제한적인 권한으로 변경
 
 ```bash
-ls -l app/index.html
+$ ls -l app/index.html
 -rw------- 1 user docker 0 Apr  8 18:05 app/index.html
 
-ls -ld app
+$ ls -ld app
 drwx------ 2 user docker 4096 Apr  8 18:05 app
 ```
 
@@ -52,10 +52,10 @@ drwx------ 2 user docker 4096 Apr  8 18:05 app
 ## ✔️ 3. 변경 후 권한 확인
 
 ```bash
-ls -l app/index.html
+$ ls -l app/index.html
 -rw------- 1 user docker 0 Apr  8 18:05 app/index.html
 
-ls -ld app
+$ ls -ld app
 drwx------ 2 user docker 4096 Apr  8 18:05 app
 ```
 
@@ -69,8 +69,8 @@ drwx------ 2 user docker 4096 Apr  8 18:05 app
 ## 🔓 4. 최종 권한으로 복구
 
 ```bash
-chmod 644 app/index.html
-chmod 755 app
+$ chmod 644 app/index.html
+$ chmod 755 app
 ```
 
 ### 👉 설명
@@ -83,10 +83,10 @@ chmod 755 app
 ## 🔍 5. 최종 권한 확인
 
 ```bash
-ls -l app/index.html
+$ ls -l app/index.html
 -rw-r--r-- 1 user docker 0 Apr  8 18:05 app/index.html
 
-ls -ld app
+$ ls -ld app
 drwxr-xr-x 2 user docker 4096 Apr  8 18:05 app
 ```
 

@@ -13,10 +13,10 @@
 ## 📂 1. 작업 위치 및 사용자 확인
 
 ```bash
-pwd
+$ pwd
 /home/user/docker-cli-notes
 
-ls -la
+$ ls -la
 total 24
 drwxr-xr-x 5 user user   4096 Apr  8 19:00 .
 drwxr-x--- 6 user user   4096 Apr  8 17:57 ..
@@ -37,9 +37,9 @@ drwxr-xr-x 3 user docker 4096 Apr  8 18:05 docs
 ## 📁 2. practice 디렉토리 생성 및 이동
 
 ```bash
-mkdir practice
-cd practice
-pwd
+$ mkdir practice
+$ cd practice
+$ pwd
 /home/user/docker-cli-notes/practice
 ```
 
@@ -53,15 +53,15 @@ pwd
 ## 📄 3. 빈 파일 생성 및 파일 내용 확인
 
 ```bash
-touch test.txt
+$ touch test.txt
 
-ls -la
+$ ls -la
 total 8
 drwxr-xr-x 2 user docker 4096 Apr  8 19:56 .
 drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
 -rw-r--r-- 1 user docker    0 Apr  8 19:56 test.txt
 
-cat test.txt
+$ cat test.txt
 ```
 
 ### 👉 설명
@@ -74,8 +74,8 @@ cat test.txt
 ## 📄 4. 파일에 내용 입력 후 다시 확인
 
 ```bash
-vim test.txt
-cat test.txt
+$ vim test.txt
+$ cat test.txt
 Hello World!
 ```
 
@@ -89,16 +89,16 @@ Hello World!
 ## 📄 5. 파일 복사 및 복사본 확인
 
 ```bash
-cp test.txt test-copy.txt
+$ cp test.txt test-copy.txt
 
-ls -la
+$ ls -la
 total 16
 drwxr-xr-x 2 user docker 4096 Apr  8 20:01 .
 drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
 -rw-r--r-- 1 user docker   13 Apr  8 20:01 test-copy.txt
 -rw-r--r-- 1 user docker   13 Apr  8 20:00 test.txt
 
-cat test-copy.txt
+$ cat test-copy.txt
 Hello World!
 ```
 
@@ -112,16 +112,16 @@ Hello World!
 ## 🔄 6. 파일 이름 변경 및 결과 확인
 
 ```bash
-mv test-copy.txt renamed.txt
+$ mv test-copy.txt renamed.txt
 
-ls -la
+$ ls -la
 total 16
 drwxr-xr-x 2 user docker 4096 Apr  8 20:02 .
 drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
 -rw-r--r-- 1 user docker   13 Apr  8 20:01 renamed.txt
 -rw-r--r-- 1 user docker   13 Apr  8 20:00 test.txt
 
-cat renamed.txt
+$ cat renamed.txt
 Hello World!
 ```
 
@@ -135,9 +135,9 @@ Hello World!
 ## 🗑️ 7. 파일 삭제 후 확인
 
 ```bash
-rm renamed.txt
+$ rm renamed.txt
 
-ls -la
+$ ls -la
 total 12
 drwxr-xr-x 2 user docker 4096 Apr  8 20:03 .
 drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
@@ -154,8 +154,8 @@ drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
 ## 📁 8. 상위 디렉토리로 이동 후 하위 디렉토리 확인
 
 ```bash
-cd ..
-ls -la practice
+$ cd ..
+$ ls -la practice
 total 12
 drwxr-xr-x 2 user docker 4096 Apr  8 20:03 .
 drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
@@ -172,17 +172,17 @@ drwxr-xr-x 6 user user   4096 Apr  8 19:56 ..
 ## 📁 9. 추가 복사 실습
 
 ```bash
-cd practice
-cp test.txt test-copy.txt
-mv test-copy.txt ~/docker-cli-notes/
-ls -la
+$ cd practice
+$ cp test.txt test-copy.txt
+$ mv test-copy.txt ~/docker-cli-notes/
+$ ls -la
 total 12
 drwxr-xr-x 2 user docker 4096 Apr  8 20:06 .
 drwxr-xr-x 6 user user   4096 Apr  8 20:06 ..
 -rw-r--r-- 1 user docker   13 Apr  8 20:00 test.txt
 
-cd ..
-ls -la
+$ cd ..
+$ ls -la
 total 32
 drwxr-xr-x 6 user user   4096 Apr  8 20:06 .
 drwxr-x--- 6 user user   4096 Apr  8 20:00 ..
