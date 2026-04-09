@@ -36,7 +36,7 @@
 
 ---
 
-## 3. 수행 체크리스트
+## ✅ 3. 수행 체크리스트
 
 - [x] WSL 2 Ubuntu 설치
 - [x] Ubuntu 홈 디렉토리 작업 환경 구성
@@ -52,8 +52,8 @@
 - [x] 바인드 마운트 반영 검증
 - [x] Docker 볼륨 영속성 검증
 - [x] Git 설정 및 GitHub 연동
-- [ ] 트러블슈팅 기록
-- [ ] README 최종 정리
+- [x] 트러블슈팅 기록
+- [x] README 최종 정리
 
 ---
 
@@ -146,7 +146,7 @@ Docker 기본 점검 및 컨테이너 실행 실습에서는 다음 내용을 �
 
 ---
 
-## 7. 커스텀 웹 서버 이미지
+## 🌐 7. 커스텀 웹 서버 이미지
 
 기존 웹 서버 베이스 이미지 방식으로 `nginx:alpine` 를 선택했습니다.  
 정적 HTML 한 장을 가장 단순하고 안정적으로 서빙할 수 있어, **웹 서버 베이스 이미지 활용 + 정적 콘텐츠 교체** 으로 진행했습니다.
@@ -186,7 +186,7 @@ $ docker ps
 
 ---
 
-## 8. 포트 매핑 검증
+## 🔌 8. 포트 매핑 검증
 
 브라우저와 curl을 사용해 포트 매핑 결과를 확인했습니다.
 
@@ -202,7 +202,7 @@ $ curl http://localhost:8080
 
 ---
 
-## 9. 바인드 마운트 검증
+## 🔗 9. 바인드 마운트 검증
 
 호스트의 app/ 디렉토리를 컨테이너의 웹 루트에 읽기 전용으로 바인드 마운트하여, 호스트 파일 수정이 컨테이너에 즉시 반영되는지 확인했습니다.
 
@@ -235,7 +235,7 @@ $ curl http://localhost:8081
 
 ---
 
-## 10. 볼륨 영속성 검증
+## 10. 💾 볼륨 영속성 검증
 
 named volume docker-cli-data를 생성하고, 첫 번째 컨테이너에서 파일을 만든 뒤 컨테이너를 삭제했습니다.
 이후 같은 volume을 두 번째 컨테이너에 다시 연결해 동일한 파일 내용을 읽어, 데이터가 유지됨을 확인했습니다.
@@ -259,7 +259,7 @@ $ docker exec volume-read bash -lc 'cat /data/note.txt'
 
 ---
 
-## 11. Git / GitHub / VS Code 연동
+## 🔄 11. Git / GitHub / VS Code 연동
 
 Git 설정, 현재 브랜치, 원격 저장소 연결 상태를 확인했습니다.
 
@@ -285,14 +285,64 @@ $ git status
 
 ---
 
-## 12. 트러블슈팅
+## 🐳 12. Docker Compose 기초 및 운영 명령어
 
-> 진행 후 기록
+`docker-compose.yml` 을 루트 디렉토리에 추가하고, 단일 웹 서비스를 Compose로 실행했습니다.  
+이번 구성은 기존 `Dockerfile` 을 그대로 재사용하면서 실행 설정을 파일로 문서화하는 방식입니다.
+
+### 사용한 docker-compose.yml
+
+```yaml
+services:
+  web:
+    build: .
+    container_name: docker-cli-compose
+    ports:
+      - '8082:80'
+```
+
+### 실행 명령
+
+```bash
+$ docker compose up -d
+$ docker compose ps
+$ docker compose logs
+$ curl http://localhost:8082
+$ docker compose down
+```
+
+### 핵심 결과
+
+- `docker compose up -d` 로 이미지 빌드와 컨테이너 실행을 한 번에 수행
+- `docker compose ps` 에서 `docker-cli-compose` 컨테이너가 `0.0.0.0:8082->80/tcp` 로 실행 중임을 확인
+- `docker compose logs` 로 NGINX 시작 로그 확인
+- `curl http://localhost:8082` 로 페이지 응답 확인
+- `docker compose down` 으로 컨테이너와 네트워크 정리 완료
+
+자세한 로그는 아래 문서에 정리했습니다.
+
+- [docs/docker-log.md](docs/docker-log.md)
+
+---
+
+## 🚨 13. 트러블슈팅
+
+실습 중 실제로 발생했거나, 진행 중 핵심적으로 확인한 문제를 정리했습니다.
+
+- Docker daemon 연결/권한 문제
+- `docker attach` 후 `exit` 시 컨테이너가 종료되는 문제
+
+각 문제에 대해 원인 가설, 확인 과정, 해결 방법, 재발 방지 포인트를 아래 문서에 정리했습니다.
 
 - [docs/trouble-shooting.md](docs/trouble-shooting.md)
 
 ---
 
-## 13. 배운 점
+## 💡 14. 배운 점
 
-> 진행 후 기록
+이번 미션을 통해 아래 내용을 직접 확인할 수 있었습니다.
+
+- 이미지와 컨테이너는 분리된 개념이며, 같은 이미지로 여러 컨테이너를 실행할 수 있다.
+- 포트 매핑은 컨테이너 내부 서비스를 호스트에서 접근 가능하게 연결하는 과정이다.
+- 바인드 마운트는 호스트 파일 변경을 즉시 반영하는 데 유리하고, Docker volume은 컨테이너 삭제 이후에도 데이터를 유지하는 데 적합하다.
+- Docker Compose를 사용하면 실행 명령을 파일로 관리할 수 있어 재현성과 문서화 측면에서 유리하다.

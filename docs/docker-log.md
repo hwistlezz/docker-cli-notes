@@ -630,3 +630,134 @@ local     docker-cli-data
   과제와 무관한 다른 volume 이름은 기록에서 제외함
 
 ---
+
+## ⚙️ 13. Docker Compose 기초 및 운영 명령어
+
+### 13-1. compose 파일 작성
+
+루트 디렉토리에 `docker-compose.yml` 을 두고 단일 웹 서비스를 정의했습니다.
+
+```yaml
+services:
+  web:
+    build: .
+    container_name: docker-cli-compose
+    ports:
+      - '8082:80'
+```
+
+### 👉 설명
+
+- 기존 `Dockerfile` 을 그대로 재사용하도록 `build: .` 로 설정
+- 컨테이너 이름을 `docker-cli-compose` 로 설정
+- 호스트 `8082` 포트를 컨테이너 `80` 포트에 연결
+
+---
+
+### 13-2 compose로 서비스 실행
+
+```bash
+$ docker compose up -d
+```
+
+### 핵심 출력 일부
+
+```text
+[+] Running 3/3
+✔ web                               Built
+✔ Network docker-cli-notes_default  Created
+✔ Container docker-cli-compose      Started
+```
+
+### 👉 설명
+
+- `docker compose up -d` 한 번으로 이미지 빌드, 네트워크 생성, 컨테이너 실행까지 함께 수행됨
+
+---
+
+### 13-3. 실행 상태 확인
+
+```bash
+$ docker compose ps
+```
+
+### 핵심 출력 일부
+
+```text
+NAME                 IMAGE                  SERVICE   STATUS         PORTS
+docker-cli-compose   docker-cli-notes-web   web       Up 6 seconds   0.0.0.0:8082->80/tcp
+```
+
+### 👉 설명
+
+- Compose 서비스 `web` 이 정상 실행 중이며, `8082:80` 포트 매핑이 적용됨을 확인
+
+---
+
+### 13-4. 로그 확인
+
+```bash
+$ docker compose logs
+```
+
+### 핵심 출력 일부
+
+```text
+docker-cli-compose  | /docker-entrypoint.sh: Configuration complete; ready for start up
+docker-cli-compose  | 2026/04/09 06:58:47 [notice] 1#1: nginx/1.29.8
+```
+
+### 👉 설명
+
+- Compose 환경에서도 NGINX가 정상적으로 시작되었음을 로그로 확인
+
+---
+
+### 13-5. 응답 확인
+
+```bash
+$ curl http://localhost:8082
+```
+
+### 핵심 출력 일부
+
+```HTML
+<!doctype html>
+<html lang="ko">
+  <head>
+    <title>docker-cli-notes</title>
+  </head>
+  <body>
+    <h1>Docker CLI Notes</h1>
+    <p>nginx 기반 커스텀 웹 서버 컨테이너 실행 확인 페이지입니다.</p>
+    <p>Custom Web Server Image</p>
+    <p>Live content update through bind mount.</p>
+  </body>
+</html>
+```
+
+### 👉 설명
+
+- Compose로 실행한 컨테이너에서도 동일한 웹 페이지가 정상 응답됨을 확인
+
+---
+
+### 13-4. compose 환경 정리
+
+```bash
+$ docker compose down
+```
+
+### 핵심 출력 일부
+
+```text
+✔ Container docker-cli-compose      Removed
+✔ Network docker-cli-notes_default  Removed
+```
+
+### 👉 설명
+
+- `docker compose down` 으로 실행한 컨테이너와 네트워크를 정리함
+- `up` / `ps` / `logs` / `down` 를 사용해 실행·상태 확인·로그 확인·종료 및 정리를 수행함
+
+---
